@@ -12,6 +12,7 @@ association of density of types of outlets with deprivation in all local authori
 Two data files are needed to run this R script: 
 
 •	FSA dataset github 2024- This excel sheet is the clean dataset of included food outlets in Scotland for this analysis. 
+
 •	SIMD+2020v2+-+postcode+lookup+-+updated+2023%023.xlsx – This excel sheet was used to link each food outlet with Scottish Index of Multiple Deprivation (SIMD) quintile. 
 SIMD is a relative measure of deprivation across 6,976 small areas (called data zones), considering information across seven domains: income, employment, education, health, 
 access to services, crime, and housing. All 6,976 data zones are grouped into 5 bands (quintiles), each containing 20% of the data zones. Quintile 1 contains the 20% most 
