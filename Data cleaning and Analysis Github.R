@@ -1,4 +1,6 @@
-# AIM 3 paper- DRAFT 2 
+# Paper title: Characterizing the food environment in Scotland and its asso-ciation with deprivation: a national study 
+# Last updated: 27 January 2025
+# Author: Deksha Kapoor
 
 #load required packages
 library(dplyr)
@@ -17,26 +19,28 @@ library(janitor)
 library(openxlsx)
 library(forcats)
 
-# Import the data ####
-#food environment
-library("readxl")
+# Import and tidy data ####
+
+#food outlet data from FSA
 df.foodenv = read_excel("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/fsa_20240926.xlsx")
-print(df.foodenv)
+
+#local authority stats (land area and population)
+df.la <- read_excel("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/local_authority_stats.xlsx")
 
 #set all column names to lower case and replace spaces and special characters with underscores
 df.foodenv <- clean_names(df.foodenv)
+df.la <- clean_names(df.la)
 
 #drop variables not needed
 df.foodenv <- df.foodenv %>%
   select(-x24, -x25, -x26)
-#have a look at column names
-colnames(df.foodenv)
+
 #fill in NA new_classification as 'Other'
 df.foodenv <- df.foodenv %>%
   mutate(
     new_classification = case_when(is.na(new_classification) ~ "Other",
                                    TRUE ~ new_classification)
-  )
+        )
 
 ## ggplot example could not put in ascending order
 # creating stacked bar chart using df.foodenv
@@ -249,14 +253,6 @@ fsa_analysis_clean$business_type[grepl("Takeaway", fsa_analysis_clean$business_n
 
 ##DATA MANAGEMENT 
 
-#14october2024 AIM 3 paper
-
-# Import the data ####
-#food environment
-library("readxl")
-df.foodenv = read_excel("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/fsa_20241410.xlsx")
-print(df.foodenv)
-
 # Create a local authority level dataset ####
 #get counts of OOH and retail in each local authority
 df.foodenv.la <- df.foodenv %>% 
@@ -264,26 +260,14 @@ df.foodenv.la <- df.foodenv %>%
   summarise(count = n())
 
 #reshape to wide format
-install.packages("tidyr")
-library(tidyr)
 df.foodenv.la <- df.foodenv.la %>%
   pivot_wider(names_from = new_classification, values_from = count)
 
-install.packages("janitor")
-library(janitor)
-#import local authority stats (land area and population)
-install.packages("readxl")
-library(readxl)
-df.la <- read_excel("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/local_authority_stats.xlsx")
-df.la<-clean_names(df.la)
 #rename for merge
 df.la <- df.la  %>% 
   rename(local_authority_name = local_authority) # new name first then old name that we are changing
 
 #merge
-
-install.packages("dplyr")
-library(dplyr)
 df.foodenv.la <- left_join(df.foodenv.la, df.la, by="local_authority_name")
 
 #rename variables
