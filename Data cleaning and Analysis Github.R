@@ -1,6 +1,6 @@
 # Paper title: Characterizing the food environment in Scotland and its asso-ciation with deprivation: a national study 
 # Last updated: 27 January 2025
-# Author: Deksha Kapoor
+# Author: Deksha Kapoor 
 
 #load required packages
 library(dplyr)
@@ -18,38 +18,40 @@ library(readxl)
 library(janitor)
 library(openxlsx)
 library(forcats)
+library(officer)
 
-# Import and tidy data ####
+# IMPORT DATA ####
+#df.foodenv <- read_excel("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/fsa_20240926.xlsx")
+#df.la <- read_excel("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/local_authority_stats.xlsx")
+#df.simd <- read_excel("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/SIMD_2020v2_postcode_lookup.xlsx")
 
-#food outlet data from FSA
-df.foodenv = read_excel("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/fsa_20240926.xlsx")
-
-#local authority stats (land area and population)
-df.la <- read_excel("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/local_authority_stats.xlsx")
+df.foodenv <- read_excel("C:/Users/ljaacks/OneDrive - University of Edinburgh/ADVISING/____PhD Students/Deksha Kapoor/Aim 3/Data/fsa_20240926.xlsx")
+df.la <- read_excel("C:/Users/ljaacks/OneDrive - University of Edinburgh/ADVISING/____PhD Students/Deksha Kapoor/Aim 3/Data/local_authority_stats.xlsx")
+df.simd <- read_excel("C:/Users/ljaacks/OneDrive - University of Edinburgh/ADVISING/____PhD Students/Deksha Kapoor/Aim 3/Data/SIMD_2020v2_postcode_lookup.xlsx")
 
 #set all column names to lower case and replace spaces and special characters with underscores
 df.foodenv <- clean_names(df.foodenv)
 df.la <- clean_names(df.la)
+df.simd <- clean_names(df.simd)
 
 #drop variables not needed
 df.foodenv <- df.foodenv %>%
   select(-x24, -x25, -x26)
+
+#rename for merge
+df.la <- df.la  %>% 
+  rename(LocalAuthorityName = local_authority_name) # new name first then old name that we are changing
 
 #fill in NA new_classification as 'Other'
 df.foodenv <- df.foodenv %>%
   mutate(
     new_classification = case_when(is.na(new_classification) ~ "Other",
                                    TRUE ~ new_classification)
-        )
+  )
 
-## ggplot example could not put in ascending order
-# creating stacked bar chart using df.foodenv
-# x axis = LA, y axis = count, colour = businesstype
-ggplot(data = df.foodenv,
-       aes(x = sort(local_authority_name), fill = business_type)) +
-  geom_bar()
 
-##DATA CLEANING 
+
+# DATA CLEANING ####
 ## STEP 1 deleting non food related establishments from the data set
 fsa_analysis_clean <- df.foodenv %>% 
   filter(!grepl(pattern = 'School', #! does the opposite
@@ -251,9 +253,27 @@ fsa_analysis_clean$business_type[grepl("Tearoom", fsa_analysis_clean$business_na
 fsa_analysis_clean$business_type[grepl("Tea room", fsa_analysis_clean$business_name)] <- "Restaurant/Cafe/Canteen"
 fsa_analysis_clean$business_type[grepl("Takeaway", fsa_analysis_clean$business_name)] <- "Takeaway/sandwich shop"
 
-##DATA MANAGEMENT 
 
-# Create a local authority level dataset ####
+
+# DATA ANALYSIS ####
+
+## Table 2: Classification of food outlets ####
+table2 <- df.foodenv %>% 
+  dplyr::select(local_authority_name, business_type, new_classification) %>% 
+  tbl_summary(by = local_authority_name,
+              missing = "no",
+              digits = list(all_categorical() ~ c(0,0)),
+              statistic = list(all_categorical() ~ "{p}% ({n})"),
+              label = c(business_type ~ "Business type",
+                        new_classification ~ "Food outlet classification")) %>% 
+  add_overall() %>%
+  bold_labels() %>%
+  as_flex_table()
+
+## Distribution of food outlets by local authority ####
+
+### Create a local authority level dataset ####
+
 #get counts of OOH and retail in each local authority
 df.foodenv.la <- df.foodenv %>% 
   group_by(local_authority_name, new_classification) %>%
@@ -262,10 +282,6 @@ df.foodenv.la <- df.foodenv %>%
 #reshape to wide format
 df.foodenv.la <- df.foodenv.la %>%
   pivot_wider(names_from = new_classification, values_from = count)
-
-#rename for merge
-df.la <- df.la  %>% 
-  rename(local_authority_name = local_authority) # new name first then old name that we are changing
 
 #merge
 df.foodenv.la <- left_join(df.foodenv.la, df.la, by="local_authority_name")
@@ -278,10 +294,9 @@ dfood.la <- dfood.la  %>%
 
 #import merged file
 dfood.la <- read_excel("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/foodenv.xlsx")
-print(dfood.la)
+# @Deksha what is this file? Why are you importing it?
 
 #calculate percent of outlets and density of outlets in local authorities
-
 dfood.la <- dfood.la  %>% 
   mutate(count_total = count_ooh+count_retail+count_other,
          percent_ooh = (count_ooh / count_total)*100,
@@ -292,31 +307,10 @@ dfood.la <- dfood.la  %>%
          density_pop_ooh = count_ooh / (population/1000),
          density_pop_retail = count_retail / (population/1000)
   )   %>% 
-  # reorder variables
+  #reorder variables
   relocate(population, land_area_sq_km, count_ooh, count_retail, count_other, count_total, percent_ooh, percent_retail, percent_other, .after = local_authority_name)
 
-
-# Results- Outlets by local authority ####
-install.packages("flextable")
-library(flextable)
-## Tables ####
-#create flextables
-install.packages("dplyr")
-library(dplyr)
-library(gtsummary)
-table1 <- df.foodenv %>% 
-  dplyr::select(local_authority_name, business_type, new_classification) %>% 
-  tbl_summary(by = local_authority_name,
-              missing = "no",
-              digits = list(all_categorical() ~ c(0,0)),
-              statistic = list(all_categorical() ~ "{p}% ({n})"),
-              label = c(business_type ~ "Business type",
-                        new_classification ~ "Food outlet classification")) %>% 
-  add_overall() %>%
-  bold_labels() %>%
-  as_flex_table()
-
-
+### Create Table 3 and Supplemental Table S2  ####
 table2 <- dfood.la %>% 
   dplyr::select(local_authority_name, percent_ooh, percent_retail, density_pop_ooh, density_sqkm_ooh, density_pop_retail,density_sqkm_retail) %>% 
   tbl_summary(by = local_authority_name,
@@ -417,19 +411,13 @@ df.table2 <- table2$body$dataset %>%
          "West Lothian" = stat_32) 
 
 #save to excel
-install.packages("writexl")
-library("writexl")
 write_xlsx(
   list(
     "Business type" = df.table1,
     "Outlet chars" = df.table2),
   path = "C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/Table_Outlets_ByLocalAuthority.xlsx")
 
-## Figures ####
-install.packages("ggplot2")
-library(ggplot2)
-library(ggplot2)
-library(dplyr)
+### Create Figure 2 ####
 figure1 <- ggplot(dfood.la, aes(x=reorder(local_authority_name,desc(density_sqkm_ooh)), y=density_sqkm_ooh)) +  
   geom_bar(position=position_dodge(), stat="identity", fill="#440154FF") +
   labs(x="",
@@ -448,14 +436,14 @@ figure2 <- ggplot(dfood.la, aes(x=reorder(local_authority_name,desc(density_sqkm
 
 ggsave(figure2, filename = "C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/Retail_density_local_authority.jpeg",width = 10, height = 6)
 
+### Create Figure 3 ####
 
 
-# Results - Outlets by SIMD #### 
+
+##  Distribution of food outlets by local authority by SIMD #### 
 
 ## Tables ####
 #create flextables
-library(dplyr)
-library(gtsummary)
 table3 <- df.foodenv %>% 
   dplyr::select(simd2020_quintile, business_type, new_classification) %>% 
   tbl_summary(by = simd2020_quintile,
@@ -469,17 +457,10 @@ table3 <- df.foodenv %>%
   add_p() %>% # this adds a chi-square test
   as_flex_table() 
 
-install.packages("officer")
-
-library(officer)
-library(flextable)
-
 save_as_docx(table3,
              path = paste0("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/","Table_Outlets_BySIMD_",format(Sys.time(),"%d%m%Y"),".docx"))  
 
 #create flextable for SMID by local authority
-library(dplyr)
-library(gtsummary)
 table3 <- df.foodenv %>% 
   dplyr::select(simd2020_quintile, business_type, local_authority_name) %>% 
   tbl_summary(by = simd2020_quintile,
@@ -493,26 +474,19 @@ table3 <- df.foodenv %>%
   add_p() %>% # this adds a chi-square test
   as_flex_table() 
 
-install.packages("officer")
-
-library(officer)
-library(flextable)
-
 save_as_docx(table3,
              path = paste0("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/","Table_Outlets_BySIMD_localauthority",format(Sys.time(),"%d%m%Y"),".docx"))  
 
 
 ## Figures ####
 
-
 #calculate percentages for plotting
-library(dplyr)
 df.fiure3 <- df.foodenv %>%
   group_by(simd2020_quintile, new_classification) %>%
   summarise(count = n()) %>%
   mutate(percentage = count / sum(count) * 100)
+
 #make figure  
-library(ggplot2)
 figure3 <- ggplot(df.fiure3, aes(fill=new_classification, y=percentage, x=simd2020_quintile))+
   geom_bar(position = "stack", stat = "identity")+
   labs(
@@ -527,10 +501,7 @@ ggsave(figure3, filename = "C:/Users/deksh/OneDrive - University of Edinburgh/AI
 figure3
   
 ## Chi square test for each local authority by SIMD
-# Import the data ####
-#food environment
-install.packages("readxl")
-library("readxl")
+
 Northa <- read_excel("C:/Users/deksh/Desktop/3rd Nov FSS analysis/Northa.xlsx")
 
 # Create contingency table # This was repeated for all local authorities 
@@ -550,10 +521,16 @@ print(chi_square_test)
 
 ## Testing differences between retail and OOH density table 3 in paper draft
 # Read the data from the 'Density' sheet
-install.packages("readxl")
-library("readxl")
 data <- read_excel("C:/Users/deksh/Desktop/3rd Nov FSS analysis/t test_3nov24.xlsx")
 # Perform an unpaired t-test
 t_test_result <- t.test(data$`OOH density`, data$`Retail Density`, var.equal = TRUE)
 # Display the results
 print(t_test_result)
+
+
+## ggplot example could not put in ascending order
+# creating stacked bar chart using df.foodenv
+# x axis = LA, y axis = count, colour = businesstype
+ggplot(data = df.foodenv,
+       aes(x = sort(local_authority_name), fill = business_type)) +
+  geom_bar()
