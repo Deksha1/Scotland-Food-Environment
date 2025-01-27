@@ -1,4 +1,4 @@
-**Food environment in Scotland**
+*Food environment in Scotland*
 
 The aim of this analysis is to characterize the food environment across Scotland and how the food environment varies by neighbourhood deprivation. 
 
@@ -22,7 +22,7 @@ access to services, crime, and housing. All 6,976 data zones are grouped into 5 
 deprived data zones in Scotland. As the SIMD score increases the level of deprivation decreases. These Look-up tables which relate individual postcodes to data zones were downloaded from https://www.nrscotland.gov.uk/statistics-and-data/geography/nrs-postcode-extract. 
 
 
-***Data Management Files***
+***Code Files***
 
 1. Data cleaning and Analysis Github.R
 
