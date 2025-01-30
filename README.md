@@ -12,7 +12,7 @@ This file contains food outlet data downloaded for all local authorities in Scot
 
 2. local_authority_stats.xlsx
 
-This file contains the land area (from WEBSITE) and population (from https://www.scotlandscensus.gov.uk/2022-results/scotland-s-census-2022-rounded-population-estimates/) for each local authority.
+This file contains the land area (from https://www.gov.scot/publications/scottish-government-urban-rural-classification-2020/documents/) and population (from https://www.scotlandscensus.gov.uk/2022-results/scotland-s-census-2022-rounded-population-estimates/) for each local authority.
 
 
 3. SIMD_2020v2_postcode_lookup.xlsx
