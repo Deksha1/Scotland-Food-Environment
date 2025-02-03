@@ -21,6 +21,8 @@ This file contains the Scottish Index of Multiple Deprivation (SIMD) rank for 6,
 access to services, crime, and housing. All 6,976 data zones are grouped into 5 bands (quintiles), each containing 20% of the data zones. Quintile 1 contains the 20% most 
 deprived data zones in Scotland. As the SIMD score increases the level of deprivation decreases. These Look-up tables which relate individual postcodes to data zones were downloaded from https://www.nrscotland.gov.uk/statistics-and-data/geography/nrs-postcode-extract. 
 
+4.
+   This folder contains shape files to create maps showing distribution of out of home (OOH) and retail outlets. 
 
 ***Code Files***
 
