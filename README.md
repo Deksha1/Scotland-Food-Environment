@@ -22,9 +22,11 @@ access to services, crime, and housing. All 6,976 data zones are grouped into 5 
 deprived data zones in Scotland. As the SIMD score increases the level of deprivation decreases. These Look-up tables which relate individual postcodes to data zones were downloaded from https://www.nrscotland.gov.uk/statistics-and-data/geography/nrs-postcode-extract. 
 
 4. fsa_20241410.xlsx
+   
    This excel sheet contains cleaned data from FSA dataset github 2024.xlsx and contains n=31135 outlets
    
 6. Local_Authority_Boundaries_-_Scotland-2025
+   
    This folder contains shape files to create maps showing distribution of out of home (OOH) and retail outlets. 
 
 ***Code Files***
@@ -33,9 +35,8 @@ deprived data zones in Scotland. As the SIMD score increases the level of depriv
 
 This R script includes:
 
--Data cleaning for FSA dataset to categorize food establishments as out of home (including restaurants, pubs, cafés, and takeaways), retail (including supermarkets and other establishments that primarily sell non-food products with a 
-limited range of food products such as pharmacies) or other (mobile caterers, charity organizations, and home caterers).
+-Data cleaning for FSA dataset to categorize food establishments as out of home (including restaurants, pubs, cafés, and takeaways), retail (including supermarkets and other establishments that primarily sell non-food products with a limited range of food products such as pharmacies) or other (mobile caterers, charity organizations, and home caterers).
 
 -Outputs summary tables and figures of food outlet classification, overall and by local authority.
 
--Analyses the association between food outlet density and SIMD, overall and by local authority.
+-Analysis of the association between food outlet density and SIMD, overall and by local authority.
