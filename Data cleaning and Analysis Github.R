@@ -22,6 +22,7 @@ library(officer)
 
 # IMPORT DATA ####
 #df.foodenv <- read_excel("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/fsa_20240926.xlsx")
+## AK's FILE PATH FOR FIGURES file_path<-"C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/clean data/fsa_20241410.xlsx"
 #df.la <- read_excel("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/local_authority_stats.xlsx")
 #df.simd <- read_excel("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/SIMD_2020v2_postcode_lookup.xlsx")
 
@@ -54,9 +55,9 @@ df.foodenv <- df.foodenv %>%
 # DATA CLEANING ####
 ## STEP 1 deleting non food related establishments from the data set
 fsa_analysis_clean <- df.foodenv %>% 
-  filter(!grepl(pattern = 'School', #! does the opposite
+  filter(!grepl(pattern = 'School', 
                 x = business_name,
-                ignore.case = TRUE)) %>% #ignore case would delete School and school
+                ignore.case = TRUE)) %>% 
   filter(!grepl(pattern = 'Childminder', 
                 x = business_name,
                 ignore.case = TRUE)) %>%            
@@ -90,20 +91,9 @@ fsa_analysis_clean <- df.foodenv %>%
 
 ## STEP2 RECATEGORISING BUSINESSTYPE USING BUSINESSNAME
 # firstly, let's check which business types already exist
-fsa_analysis_clean$business_type %>% # pick all the values from the BusinessType column
-  unique() # then return only the UNIQUE values
-
+fsa_analysis_clean$business_type %>% 
+  unique() 
 # recatagorise all retail chains from 'Retailers - other' to 'Retailers - supermarkets/hypermarkets
-##using case when,toupper command and TRUE 
-##using case_when function to modify BusinessType based on BusinessName
-##toupper converts all the business names as caps so that the command is case insensitive
-## TRUE ~ business_type this line leaves BusinessType of all other rows as-is
-spar <- fsa_analysis_clean %>% 
-  mutate(business_type = case_when(toupper(business_name) == "SPAR" ~ "Retailers - supermarkets/hypermarkets",
-                                   TRUE ~ business_type) 
-  ) %>%  
-  filter(toupper(business_name) == "SPAR") %>% # filtering to see if mutate case_when has worked
-  select(business_name,business_type) # select only the columns of interest to look at
 
 fsa_analysis_clean %>% 
   mutate(business_type = case_when(toupper(business_name) == "SCOTMID" ~ "Retailers - supermarkets/hypermarkets",
@@ -144,47 +134,9 @@ fsa_analysis_clean %>%
                                    TRUE ~ business_type)) %>% 
   mutate(business_type = case_when(toupper(business_name) == "COOPERATIVE" ~ "Retailers - supermarkets/hypermarkets",
                                    TRUE ~ business_type)) %>%  
-  # STEP 3 recatagorise all chains to 'Takeaway/sandwich shop'
-  fsa_analysis_clean %>% 
-  mutate(business_type = case_when(toupper(business_name) == "GREGGS" ~ "Takeaway/sandwich shop",
-                                   TRUE ~ business_type)) %>%  
-  mutate(business_type = case_when(toupper(business_name) == "GREGGS OF EDINBURGH" ~ "Takeaway/sandwich shop",
-                                   TRUE ~ business_type)) %>%  
-  mutate(business_type = case_when(toupper(business_name) == "GREGGS OF SCOTLAND" ~ "Takeaway/sandwich shop",
-                                   TRUE ~ business_type)) %>%  
-  mutate(business_type = case_when(toupper(business_name) == "GREGGS PLC" ~ "Takeaway/sandwich shop",
-                                   TRUE ~ business_type)) %>%  
-  mutate(business_type = case_when(toupper(business_name) == "BAYNES" ~ "Takeaway/sandwich shop",
-                                   TRUE ~ business_type)) %>%  
-  mutate(business_type = case_when(toupper(business_name) == "BAYNES FAMILY BAKERS" ~ "Takeaway/sandwich shop",
-                                   TRUE ~ business_type)) %>%  
-  mutate(business_type = case_when(toupper(business_name) == "BAYNES THE FAMILY BAKERS" ~ "Takeaway/sandwich shop",
-                                   TRUE ~ business_type)) %>% 
-  mutate(business_type = case_when(toupper(business_name) == "BAYNES THE BAKERS" ~ "Takeaway/sandwich shop",
-                                   TRUE ~ business_type)) %>% 
-  mutate(business_type = case_when(toupper(business_name) == "BAYNES BAKERS" ~ "Takeaway/sandwich shop",
-                                   TRUE ~ business_type)) %>% 
-  mutate(business_type = case_when(toupper(business_name) == "BAYNES FAMILY BAKERY" ~ "Takeaway/sandwich shop",
-                                   TRUE ~ business_type)) %>% 
-  # STEP 4 recatagorise all FOODBANKS to 'Other catering premises', chains to 'restaurants/cafe/canteen'
-  fsa_analysis_clean %>% 
-  mutate(business_type = case_when(toupper(business_name) == "FOODBANKS" ~ "Other catering premises",
-                                   TRUE ~ business_type)) %>%  
-  mutate(business_type = case_when(toupper(business_name) == "SUBWAY" ~ "Restaurant/Cafe/Canteen",
-                                   TRUE ~ business_type)) %>%  
-  mutate(business_type = case_when(toupper(business_name) == "STARBUCKS" ~ "Restaurant/Cafe/Canteen",
-                                   TRUE ~ business_type)) %>%  
-  mutate(business_type = case_when(toupper(business_name) == "COSTA COFFEE" ~ "Restaurant/Cafe/Canteen",
-                                   TRUE ~ business_type)) %>%  
-  mutate(business_type = case_when(toupper(business_name) == "COSTA" ~ "Restaurant/Cafe/Canteen",
-                                   TRUE ~ business_type)) %>%  
-  mutate(business_type = case_when(toupper(business_name) == "DOMINO'S PIZZA" ~ "Restaurant/Cafe/Canteen",
-                                   TRUE ~ business_type)) %>%  
-  mutate(business_type = case_when(toupper(business_name) == "KFC" ~ "Restaurant/Cafe/Canteen",
-                                   TRUE ~ business_type)) %>%  
-  #STEP 5 some more cleaning on recatagorising 
-  fsa_analysis_clean %>% 
-  mutate(business_type = case_when(toupper(business_name) == "MORRISONS DAILY" ~ "Retailers - supermarkets/hypermarkets",
+ mutate(business_type = case_when(toupper(business_name) == "SPAR" ~ "Retailers - supermarkets/hypermarkets",
+                                   TRUE ~ business_type)) %>%
+mutate(business_type = case_when(toupper(business_name) == "MORRISONS DAILY" ~ "Retailers - supermarkets/hypermarkets",
                                    TRUE ~ business_type)) %>%  
   mutate(business_type = case_when(toupper(business_name) == "MORRISON DAILY" ~ "Retailers - supermarkets/hypermarkets",
                                    TRUE ~ business_type)) %>% 
@@ -238,11 +190,48 @@ fsa_analysis_clean %>%
                                    TRUE ~ business_type)) %>% 
   mutate(business_type = case_when(toupper(business_name) == "MARKS AND SPENCER SIMPLY FOOD" ~ "Retailers - supermarkets/hypermarkets",
                                    TRUE ~ business_type)) 
+  # STEP 3 recatagorise all chains to 'Takeaway/sandwich shop'
+  fsa_analysis_clean %>% 
+  mutate(business_type = case_when(toupper(business_name) == "GREGGS" ~ "Takeaway/sandwich shop",
+                                   TRUE ~ business_type)) %>%  
+  mutate(business_type = case_when(toupper(business_name) == "GREGGS OF EDINBURGH" ~ "Takeaway/sandwich shop",
+                                   TRUE ~ business_type)) %>%  
+  mutate(business_type = case_when(toupper(business_name) == "GREGGS OF SCOTLAND" ~ "Takeaway/sandwich shop",
+                                   TRUE ~ business_type)) %>%  
+  mutate(business_type = case_when(toupper(business_name) == "GREGGS PLC" ~ "Takeaway/sandwich shop",
+                                   TRUE ~ business_type)) %>%  
+  mutate(business_type = case_when(toupper(business_name) == "BAYNES" ~ "Takeaway/sandwich shop",
+                                   TRUE ~ business_type)) %>%  
+  mutate(business_type = case_when(toupper(business_name) == "BAYNES FAMILY BAKERS" ~ "Takeaway/sandwich shop",
+                                   TRUE ~ business_type)) %>%  
+  mutate(business_type = case_when(toupper(business_name) == "BAYNES THE FAMILY BAKERS" ~ "Takeaway/sandwich shop",
+                                   TRUE ~ business_type)) %>% 
+  mutate(business_type = case_when(toupper(business_name) == "BAYNES THE BAKERS" ~ "Takeaway/sandwich shop",
+                                   TRUE ~ business_type)) %>% 
+  mutate(business_type = case_when(toupper(business_name) == "BAYNES BAKERS" ~ "Takeaway/sandwich shop",
+                                   TRUE ~ business_type)) %>% 
+  mutate(business_type = case_when(toupper(business_name) == "BAYNES FAMILY BAKERY" ~ "Takeaway/sandwich shop",
+                                   TRUE ~ business_type)) %>% 
+  # STEP 4 recatagorise all FOODBANKS to 'Other catering premises', chains to 'restaurants/cafe/canteen'
+  fsa_analysis_clean %>% 
+  mutate(business_type = case_when(toupper(business_name) == "FOODBANKS" ~ "Other catering premises",
+                                   TRUE ~ business_type)) %>%  
+  mutate(business_type = case_when(toupper(business_name) == "SUBWAY" ~ "Restaurant/Cafe/Canteen",
+                                   TRUE ~ business_type)) %>%  
+  mutate(business_type = case_when(toupper(business_name) == "STARBUCKS" ~ "Restaurant/Cafe/Canteen",
+                                   TRUE ~ business_type)) %>%  
+  mutate(business_type = case_when(toupper(business_name) == "COSTA COFFEE" ~ "Restaurant/Cafe/Canteen",
+                                   TRUE ~ business_type)) %>%  
+  mutate(business_type = case_when(toupper(business_name) == "COSTA" ~ "Restaurant/Cafe/Canteen",
+                                   TRUE ~ business_type)) %>%  
+  mutate(business_type = case_when(toupper(business_name) == "DOMINO'S PIZZA" ~ "Restaurant/Cafe/Canteen",
+                                   TRUE ~ business_type)) %>%  
+  mutate(business_type = case_when(toupper(business_name) == "KFC" ~ "Restaurant/Cafe/Canteen",
+                                   TRUE ~ business_type)) %>%    
 
-#STEP 6 re categorization of strings in business name  
-fsa_analysis_clean$business_type %>% # pick all the values from the BusinessType column
+#STEP 5 re categorization of strings in business name  
+fsa_analysis_clean$business_type %>% 
   unique() 
-
 fsa_analysis_clean$business_type[grepl("hotel", fsa_analysis_clean$business_name)] <- "Restaurant/Cafe/Canteen"
 fsa_analysis_clean$business_type[grepl("Hotel", fsa_analysis_clean$business_name)] <- "Restaurant/Cafe/Canteen" 
 fsa_analysis_clean$business_type[grepl("Cafe", fsa_analysis_clean$business_name)] <- "Restaurant/Cafe/Canteen" 
@@ -256,8 +245,8 @@ fsa_analysis_clean$business_type[grepl("Takeaway", fsa_analysis_clean$business_n
 
 
 # DATA ANALYSIS ####
-
-## Table 2: Classification of food outlets ####
+##Tables##
+## Table 2: Classification of food outlets in Scotland (n=31,135).
 table2 <- df.foodenv %>% 
   dplyr::select(local_authority_name, business_type, new_classification) %>% 
   tbl_summary(by = local_authority_name,
@@ -292,10 +281,6 @@ dfood.la <- dfood.la  %>%
          count_retail = Retail,
          count_other = Other)
 
-#import merged file
-dfood.la <- read_excel("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/foodenv.xlsx")
-# @Deksha what is this file? Why are you importing it?
-
 #calculate percent of outlets and density of outlets in local authorities
 dfood.la <- dfood.la  %>% 
   mutate(count_total = count_ooh+count_retail+count_other,
@@ -310,7 +295,8 @@ dfood.la <- dfood.la  %>%
   #reorder variables
   relocate(population, land_area_sq_km, count_ooh, count_retail, count_other, count_total, percent_ooh, percent_retail, percent_other, .after = local_authority_name)
 
-### Create Table 3 and Supplemental Table S2  ####
+### Create Table 3: Density of out of home (OOH), retail and other food outlets (outlets per km2 ) by local authority in Scotland, 2024 (n=31,135)
+## and Supplemental Table S2  ####
 table2 <- dfood.la %>% 
   dplyr::select(local_authority_name, percent_ooh, percent_retail, density_pop_ooh, density_sqkm_ooh, density_pop_retail,density_sqkm_retail) %>% 
   tbl_summary(by = local_authority_name,
@@ -417,33 +403,14 @@ write_xlsx(
     "Outlet chars" = df.table2),
   path = "C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/Table_Outlets_ByLocalAuthority.xlsx")
 
-### Create Figure 2 ####
-figure1 <- ggplot(dfood.la, aes(x=reorder(local_authority_name,desc(density_sqkm_ooh)), y=density_sqkm_ooh)) +  
-  geom_bar(position=position_dodge(), stat="identity", fill="#440154FF") +
-  labs(x="",
-       y="Density of out of home (outlets per sq km)") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0.5))
 
-ggsave(figure1, filename = "C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/OOH_density_local_authority.jpeg",width = 10, height = 6)
-
-figure2 <- ggplot(dfood.la, aes(x=reorder(local_authority_name,desc(density_sqkm_retail)), y=density_sqkm_retail)) +  
-  geom_bar(position=position_dodge(), stat="identity", fill="#440154FF") +
-  labs(x="",
-       y="Density of food retail (outlets per sq km)") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0.5))
-
-ggsave(figure2, filename = "C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/Retail_density_local_authority.jpeg",width = 10, height = 6)
-
-### Create Figure 3 ####
-
-
-
-##  Distribution of food outlets by local authority by SIMD #### 
+# Results - Outlets by SIMD #### 
 
 ## Tables ####
+## S4 Association of SIMD with classification of outlets Overall and classification by OOH, retail and others  ##
 #create flextables
+library(dplyr)
+library(gtsummary)
 table3 <- df.foodenv %>% 
   dplyr::select(simd2020_quintile, business_type, new_classification) %>% 
   tbl_summary(by = simd2020_quintile,
@@ -454,13 +421,22 @@ table3 <- df.foodenv %>%
                         new_classification ~ "Food outlet classification")) %>% 
   add_overall() %>%
   bold_labels() %>%
-  add_p() %>% # this adds a chi-square test
+  add_p() %>% 
   as_flex_table() 
+
+install.packages("officer")
+
+library(officer)
+library(flextable)
 
 save_as_docx(table3,
              path = paste0("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/","Table_Outlets_BySIMD_",format(Sys.time(),"%d%m%Y"),".docx"))  
 
-#create flextable for SMID by local authority
+#create flextable for SMID by local authority 
+## S5 Association of SIMD with classification of outlets by local authorities ##
+
+library(dplyr)
+library(gtsummary)
 table3 <- df.foodenv %>% 
   dplyr::select(simd2020_quintile, business_type, local_authority_name) %>% 
   tbl_summary(by = simd2020_quintile,
@@ -473,64 +449,243 @@ table3 <- df.foodenv %>%
   bold_labels() %>%
   add_p() %>% # this adds a chi-square test
   as_flex_table() 
-
 save_as_docx(table3,
              path = paste0("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/","Table_Outlets_BySIMD_localauthority",format(Sys.time(),"%d%m%Y"),".docx"))  
 
+### Figures###
+##Create Figure 2. Distribution of food outlets by local authority in Scotland, 2024 (n=31,135) ##
+## (a)	Frequency of food outlets 
+install.packages("readxl")
+library(readxl)
+file_path<-"C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/clean data/fsa_20241410.xlsx"
+graph_data <- read_excel(file_path, sheet = "Graphdata")
+print(file.exists(file_path))
 
-## Figures ####
+# List of packages to install and load
+packages <- c("ggplot2", "plotly", "lattice", "cowplot", "gridExtra",
+              "sf", "rgdal", "rgeos", "tmap", "leaflet", "maps", "mapdata", "maptools")
 
-#calculate percentages for plotting
-df.fiure3 <- df.foodenv %>%
-  group_by(simd2020_quintile, new_classification) %>%
-  summarise(count = n()) %>%
-  mutate(percentage = count / sum(count) * 100)
+# Install packages that are not already installed
+installed_packages <- installed.packages()[,"Package"]
+packages_to_install <- packages[!packages %in% installed_packages]
 
-#make figure  
-figure3 <- ggplot(df.fiure3, aes(fill=new_classification, y=percentage, x=simd2020_quintile))+
-  geom_bar(position = "stack", stat = "identity")+
-  labs(
-    x = "SIMD Quintile",
-    y = "Percentage of outlets",
-    fill = "Food outlet classification")+
+if(length(packages_to_install) > 0) {
+  install.packages(packages_to_install)
+}
+# Load all libraries
+lapply(packages, library, character.only = TRUE)
+
+# Check which packages failed to load
+failed_to_load <- packages[!packages %in% (.packages())]
+
+if(length(failed_to_load) > 0) {
+  cat("The following packages failed to load:", failed_to_load, "\n")
+} else {
+  cat("All packages loaded successfully.\n")
+}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(readxl)
+
+# Reshape the data from wide to long format
+df_long <- graph_data  %>%
+  pivot_longer(cols = -`Local Authority`, names_to = "Category", values_to = "Count")
+
+custom_colors <- c("Restaurant/Cafe/Canteen" = "skyblue", "Takeaway/sandwich shop"="blue3", "Retailers - other"="darkgrey", "Mobile caterer" = "green4", "Pub/bar/nightclub"= "cyan", "Retailers - supermarkets/hypermarkets"="grey","Other catering premises" = "green2" )
+
+# Create the stacked bar plot
+s <- ggplot(df_long, aes(x = reorder(`Local Authority`, -Count), y = Count, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +  scale_fill_manual(values = custom_colors) +
+  labs(title = "Number of Outlets per Local Authority",
+       x = "Local Authority",
+       y = "Number of Outlets",
+       fill = "Category") +
   theme_minimal() +
-  theme(legend.position = "right", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0.5)) +
-  scale_fill_brewer(palette = "Paired")
+  theme(axis.text.x = element_text(size = 8, angle = 90, vjust = 0.5, hjust = 1),
+        legend.text = element_text(size = 8)
+  )
+# Save a larger version of the plot
+ggsave("Count_bar_chart.png", s, width = 12, height = 49, dpi = 800)
+# Display the plot
+print(s)
+## (b) Proportion of outlets  
+file_path<-"C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/clean data/fsa_20241410.xlsx"
+graph2data <- read_excel(file_path, sheet = "PGraph")
+print(file.exists(file_path))
 
-ggsave(figure3, filename = "C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/Outlet_type_SIMD.jpeg", width = 9, height = 5)
-figure3
+# Reshape the data from wide to long format
+df_long <- graph2data  %>%
+  pivot_longer(cols = -`Local Authority`, names_to = "Category", values_to = "Percentage")
+custom_colors <- c("Restaurant/Cafe/Canteen" = "skyblue", "Takeaway/sandwich shop"="blue3", "Retailers - other"="darkgrey", "Mobile caterer" = "green4", "Pub/bar/nightclub"= "cyan", "Retailers - supermarkets/hypermarkets"="grey","Other catering premises" = "green2" )
+# Create the stacked bar plot
+q <- ggplot(df_long, aes(x = `Local Authority`, y = Percentage, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +  scale_fill_manual(values = custom_colors) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title = "Proportion of Outlets by Local Authority",
+       x = "Local Authority",
+       y = "Proportion of Outlets",
+       fill = "Category") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 8, angle = 90, vjust = 0.5, hjust = 1),
+        legend.text = element_text(size = 8)
+# Save a larger version of the plot
+ggsave("Percentage_bar_chart.png", q, width = 12, height = 49, dpi = 800)
+# Display the plot
+print(q)
+## Figure 3. Proportion of food outlets classified as (a) Out of home (OOH, n=18,707) and (b) Retail (n=8,847), by local authority in Scotland, 2024 ##	
+file_path<-"C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/clean data/fsa_20241410.xlsx"
+# Load the Scotland shapefile 
+scotland_map <- st_read("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/clean data/Scotlandmaps/pub_las.shp") 
+
+# Ensure column names match expected format
+colnames(dfretail) <- c("Local Authority", "Retail")
+
+# Merge map data with the dataset
+scotland_map <- scotland_map %>%
+  left_join(dfretail, by = c("local_auth" = "Local Authority"))
+
+# Compute centroids for labeling 
+#scotland_map$centroid <- st_centroid(scotland_map$geometry)
+#scotland_map$lon <- st_coordinates(scotland_map$centroid)[, 1]
+#scotland_map$lat <- st_coordinates(scotland_map$centroid)[, 2]
   
-## Chi square test for each local authority by SIMD
+# Create the choropleth map
+ggplot(scotland_map) +
+  geom_sf(aes(fill = Retail), color = "white") + 
+#  geom_text(data = scotland_map, aes(x = lon, y = lat, label = Retail), 
+#            size = 2, color = "white") +
+  scale_fill_gradient(low = "lightblue", high = "darkblue", na.value = "black") +
+  labs(title = "Proportion of Retail in Scotland",
+       fill = "Retail Percentage") +
+  theme_minimal() + 
+  theme_void()  # Removes longitude, latitude, and grid lines
 
-Northa <- read_excel("C:/Users/deksh/Desktop/3rd Nov FSS analysis/Northa.xlsx")
+#Repeat same process for OOH
+#Read source file
+dfooh <- read_excel(file_path, sheet = "OOH")
+## Ensure column names match expected format
+colnames(dfooh) <- c("Local Authority", "OOH")
+# Join the map data with the dataset
+scotland_map <- scotland_map %>%
+  left_join(dfooh, by = c("local_auth" = "Local Authority"))
+# Create the choropleth map
+ggplot(scotland_map) +
+  geom_sf(aes(fill = OOH), color = "white") +
+  scale_fill_gradient(low = "lightblue", high = "darkblue", na.value = "black") +
+  labs(title = "Proportion of OOH in Scotland",
+       fill = "OOH Percentage") +
+  theme_minimal() + 
+  theme_void()  # Removes longitude, latitude, and grid lines			
 
-# Create contingency table # This was repeated for all local authorities 
-contingency_table_Northa <- table(Northa$simd2020_quintile, Northa$new_classification)
-print(contingency_table_Northa)
-# Perform the Chi-squared test
-chi_square_test <- chisq.test(contingency_table_Northa)
-# Display the results
-print(chi_square_test)
-# This was repeated for all local authorities by editing the same command
-contingency_table_dundee <- table(dundee$simd2020_quintile, dundee$new_classification)
-print(contingency_table_dundee)
-# Perform the Chi-squared test
-chi_square_test <- chisq.test(contingency_table_dundee)
-# Display the results
-print(chi_square_test)
+## Figure 4. Association of SIMD with classification of outlets  ##
+## (a) Overall Scotland- all outlets ##
 
-## Testing differences between retail and OOH density table 3 in paper draft
-# Read the data from the 'Density' sheet
-data <- read_excel("C:/Users/deksh/Desktop/3rd Nov FSS analysis/t test_3nov24.xlsx")
-# Perform an unpaired t-test
-t_test_result <- t.test(data$`OOH density`, data$`Retail Density`, var.equal = TRUE)
-# Display the results
-print(t_test_result)
+file_path<-"C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/clean data/fsa_20241410.xlsx"
+graph1 <- read_excel(file_path, sheet = "Graph1")
+print(file.exists(file_path))
+
+# Convert data to long format for ggplot2
+data_long <- melt(graph1, id.vars = "SIMDQuintile", variable.name = "Category", value.name = "Percentage")
+
+# Ensure Quintile is treated as a factor (categorical)
+data_long$SIMDQuintile <- as.factor(data_long$SIMDQuintile)
+
+custom_colors <- c("Restaurant/Cafe/Canteen" = "skyblue", "Takeaway/sandwich shop"="blue3", "Retailers - other"="darkgrey", "Mobile caterer" = "green4", "Pub/bar/nightclub"= "cyan", "Retailers - supermarkets/hypermarkets"="grey","Other catering premises" = "green2" )
+
+# Create the stacked bar chart
+a<-ggplot(data_long, aes(x = SIMDQuintile, y = Percentage, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.5) + scale_fill_manual(values = custom_colors) +
+  theme_minimal() +
+  labs(title = "Stacked Bar Chart by Quintile", x = "SIMDQuintile", y = "Percentage") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  theme(legend.title = element_blank(), legend.position = "bottom", legend.key.size = unit(0.5, "cm"))
+
+# Save a larger version of the plot
+ggsave("Percentage_bar_chart.png", a, width = 12, height = 49, dpi = 800)
+# Display the plot
+print(a)
+## (b) Overall Scotland- subcatagorised ##
+
+#Repeat above process for Graph 2
+#Read the file
+graph2 <- read_excel(file_path, sheet = "Graph2")
+
+# Convert data to long format for ggplot2
+data_long2 <- melt(graph2, id.vars = "SIMDQuintile", variable.name = "Category", value.name = "Percentage")
+
+# Ensure Quintile is treated as a factor (categorical)
+data_long2$SIMDQuintile <- as.factor(data_long2$SIMDQuintile)
+
+custom_colors2 <- c("Retail" = "green4", "OOH"="blue4", "Others"="lightblue" )
+
+# Create the stacked bar chart
+b<-ggplot(data_long2, aes(x = SIMDQuintile, y = Percentage, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.5) + scale_fill_manual(values = custom_colors2) +
+  theme_minimal() +
+  labs(title = "Categories by Quintile", x = "SIMDQuintile", y = "Percentage") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  theme(legend.title = element_blank(), legend.position = "bottom", legend.key.size = unit(0.5, "cm"))
+
+# Save a larger version of the plot
+ggsave("Percentage_bar_chart.png", b, width = 12, height = 49, dpi = 800)
+
+# Display the plot
+print(b)
+## (c) City of Edinburgh1 example of a local authority with higher proportion of both OOH and retail in least deprived neighborhoods compared to most deprived ##
+
+#Repeat above process for Graph 3 for Edinburgh
+#Read the file
+graph3 <- read_excel(file_path, sheet = "Edinburgh")
+
+# Convert data to long format for ggplot2
+data_long3 <- melt(graph3, id.vars = "SIMDQuintile", variable.name = "Category", value.name = "Percentage")
+
+# Ensure Quintile is treated as a factor (categorical)
+data_long3$SIMDQuintile <- as.factor(data_long3$SIMDQuintile)
+
+custom_colors3 <- c("Retail" = "green4", "OOH"="blue4", "Others"="lightblue" )
+
+# Create the stacked bar chart
+c<-ggplot(data_long3, aes(x = SIMDQuintile, y = Percentage, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.5) + scale_fill_manual(values = custom_colors2) +
+  theme_minimal() +
+  labs(title = "Categories by Quintile", x = "SIMDQuintile", y = "Percentage") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  theme(legend.title = element_blank(), legend.position = "bottom", legend.key.size = unit(0.5, "cm"))
+
+# Save a larger version of the plot
+ggsave("Percentage_bar_chart.png", c, width = 12, height = 49, dpi = 800)
+
+# Display the plot
+print(c)
+## (d) Glasgow city2 example of a local authority with higher proportion of both OOH and retail in most deprived neighborhoods compared to least deprived ##
+
+#Repeat above process for Graph 4 for Glasgow
+#Read the file
+graph4 <- read_excel(file_path, sheet = "Glasgow")
+
+# Convert data to long format for ggplot2
+data_long4 <- melt(graph4, id.vars = "SIMDQuintile", variable.name = "Category", value.name = "Percentage")
+
+# Ensure Quintile is treated as a factor (categorical)
+data_long4$SIMDQuintile <- as.factor(data_long4$SIMDQuintile)
+
+custom_colors4 <- c("Retail" = "green4", "OOH"="blue4", "Others"="lightblue" )
+
+# Create the stacked bar chart
+d<-ggplot(data_long4, aes(x = SIMDQuintile, y = Percentage, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.5) + scale_fill_manual(values = custom_colors2) +
+  theme_minimal() +
+  labs(title = "Categories by Quintile", x = "SIMDQuintile", y = "Percentage") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  theme(legend.title = element_blank(), legend.position = "bottom", legend.key.size = unit(0.5, "cm"))
+# Save a larger version of the plot
+ggsave("Percentage_bar_chart.png", d, width = 12, height = 49, dpi = 800)
+# Display the plot
+print(d)
 
 
-## ggplot example could not put in ascending order
-# creating stacked bar chart using df.foodenv
-# x axis = LA, y axis = count, colour = businesstype
-ggplot(data = df.foodenv,
-       aes(x = sort(local_authority_name), fill = business_type)) +
-  geom_bar()
+
+
+
