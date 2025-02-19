@@ -28,12 +28,12 @@ deprived data zones in Scotland. As the SIMD score increases the level of depriv
    This excel sheet contains data for each local authority on different sheets for looking at associations with SIMD with ease.
 
 6. fsa_20241410.xlsx
-   This excel sheet contains data from table 2 and 3 to create figures.
+   This excel sheet contains organised data from table 2 to create figures with ease.
    
 
 ***Code Files***
 
-1. Data cleaning and Analysis Github.R
+1. Food Environment Paper H&P.R
 
 This R script includes:
 
