@@ -23,7 +23,7 @@ deprived data zones in Scotland. As the SIMD score increases the level of depriv
 
 4. fsa_20241410.xlsx
    
-   This excel sheet contains cleaned data from FSA dataset github 2024.xlsx and contains n=31135 outlets
+   This excel sheet contains tables to create figures from cleaned data 
    
 6. Local_Authority_Boundaries_-_Scotland-2025
    
