@@ -1,6 +1,6 @@
 ****Food environment in Scotland****
 
-The aim of this analysis is to characterize the food environment across Scotland and how the food environment varies by neighbourhood deprivation. 
+The aim of this analysis was to characterise the food environment across Scotland and how the food environment varies by neighbourhood deprivation. 
 
 
 ***Data Files***
@@ -17,28 +17,32 @@ This file contains the land area (from https://www.gov.scot/publications/scottis
 
 3. SIMD_2020v2_postcode_lookup.xlsx
 
-This file contains the Scottish Index of Multiple Deprivation (SIMD) rank for 6,976 small areas (called data zones), considering information across seven domains: income, employment, education, health, 
-access to services, crime, and housing. All 6,976 data zones are grouped into 5 bands (quintiles), each containing 20% of the data zones. Quintile 1 contains the 20% most 
-deprived data zones in Scotland. As the SIMD score increases the level of deprivation decreases. These Look-up tables which relate individual postcodes to data zones were downloaded from https://www.nrscotland.gov.uk/statistics-and-data/geography/nrs-postcode-extract. 
+This file contains the Scottish Index of Multiple Deprivation (SIMD) rank for 6,976 small areas (called data zones), considering information across seven domains: income, employment, education, health, access to services, crime, and housing. All 6,976 data zones are grouped into 5 bands (quintiles), each containing 20% of the data zones. Quintile 1 contains the 20% most deprived data zones in Scotland. As the SIMD score increases the level of deprivation decreases. These Look-up tables which relate individual postcodes to data zones were downloaded from https://www.nrscotland.gov.uk/statistics-and-data/geography/nrs-postcode-extract. 
+
 
 4. Scotland Map
-   This folder contains shape files to create maps showing distribution of out of home (OOH) and retail outlets.
-   
-5.  Local authorities.xlsx
-   This excel sheet contains data for each local authority on different sheets for looking at associations with SIMD with ease.
+
+This folder contains shape files to create maps showing the distribution of out of home (OOH) and retail outlets across Scotland.
+
+
+5. Local authorities.xlsx
+
+This file contains data for each local authority on different sheets for looking at associations with SIMD with ease.
+
 
 6. fsa_20241410.xlsx
-   This excel sheet contains organised data from table 2 to create figures with ease.
+
+This file contains organised data from table 2 to create figures with ease.
    
 
 ***Code Files***
 
-1. Food Environment Paper H&P.R
+1. Food Environment Paper.R
 
 This R script includes:
 
--Data cleaning for FSA dataset to categorize food establishments as out of home (including restaurants, pubs, cafés, and takeaways), retail (including supermarkets and other establishments that primarily sell non-food products with a limited range of food products such as pharmacies) or other (mobile caterers, charity organizations, and home caterers).
+-Data cleaning for the FSA dataset to categorise food establishments as OOH (including restaurants, pubs, cafés, and takeaways), retail (including supermarkets and other establishments that primarily sell non-food products with a limited range of food products such as pharmacies) or other (mobile caterers, charity organizations, and home caterers).
 
 -Outputs summary tables and figures of food outlet classification, overall and by local authority.
 
--Analysis of the association between food outlet density and SIMD, overall and by local authority.
+-Conducts an analysis of the association between food outlet density and SIMD, overall and by local authority. 
