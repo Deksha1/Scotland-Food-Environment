@@ -40,11 +40,6 @@ file_path_la<-"C:/Users/deksh/Desktop/3rd Nov FSS analysis/Local authorities.xls
 # Shapefile for map
 scotland_map <- st_read("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/clean data/Scotland map_shape file/pub_las.shp") 
 
-
-#df.foodenv <- read_excel("C:/Users/ljaacks/OneDrive - University of Edinburgh/ADVISING/____PhD Students/Deksha Kapoor/Aim 3/Data/fsa_20240926.xlsx")
-#df.la <- read_excel("C:/Users/ljaacks/OneDrive - University of Edinburgh/ADVISING/____PhD Students/Deksha Kapoor/Aim 3/Data/local_authority_stats.xlsx")
-#df.simd <- read_excel("C:/Users/ljaacks/OneDrive - University of Edinburgh/ADVISING/____PhD Students/Deksha Kapoor/Aim 3/Data/SIMD_2020v2_postcode_lookup.xlsx")
-
 #set all column names to lower case and replace spaces and special characters with underscores
 df.foodenv <- clean_names(df.foodenv)
 df.la <- clean_names(df.la)
@@ -246,7 +241,6 @@ fsa_analysis_clean %>%
                                    TRUE ~ business_type)) %>%    
   
   #STEP 5 re categorization of strings in business name  
-  
 fsa_analysis_clean$business_type[grepl("hotel", fsa_analysis_clean$business_name)] <- "Restaurant/Cafe/Canteen"
 fsa_analysis_clean$business_type[grepl("Hotel", fsa_analysis_clean$business_name)] <- "Restaurant/Cafe/Canteen" 
 fsa_analysis_clean$business_type[grepl("Cafe", fsa_analysis_clean$business_name)] <- "Restaurant/Cafe/Canteen" 
@@ -441,11 +435,6 @@ table3 <- fsa_analysis_clean %>%
   bold_labels() %>%
   add_p() %>% 
   as_flex_table() 
-
-install.packages("officer")
-
-library(officer)
-library(flextable)
 
 save_as_docx(table3,
              path = paste("C:/Users/deksh/OneDrive - University of Edinburgh/AIM 3/FSS data/","Table_Outlets_BySIMD",format(Sys.time(),"%d%m%Y"),".docx"))  
