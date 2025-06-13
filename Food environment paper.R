@@ -785,8 +785,14 @@ data_long <- melt(graph1, id.vars = "SIMDQuintile", variable.name = "Category", 
 
 # Ensure Quintile is treated as a factor (categorical)
 data_long$SIMDQuintile <- as.factor(data_long$SIMDQuintile)
+data_long$Category <- factor(data_long$Category, levels = c("Restaurant/Cafe/Canteen", "Takeaway/sandwich shop","Pub/bar/nightclub",
+           "Retailers - other", "Retailers - supermarkets/hypermarkets", 
+           "Other catering premises", "Mobile caterer")) 
 
-custom_colors <- c("Restaurant/Cafe/Canteen" = "skyblue", "Takeaway/sandwich shop"="blue3", "Retailers - other"="darkgrey", "Mobile caterer" = "green4", "Pub/bar/nightclub"= "cyan", "Retailers - supermarkets/hypermarkets"="grey","Other catering premises" = "green2" )
+custom_colors <- c("Restaurant/Cafe/Canteen" = "blue4", "Takeaway/sandwich shop"="blue3", 
+                   "Retailers - other"="green4", "Mobile caterer" = "lightblue1", 
+                   "Pub/bar/nightclub"= "blue", "Retailers - supermarkets/hypermarkets"="green3",
+                   "Other catering premises" = "lightblue" )
 
 # Create the stacked bar chart
 install.packages("ggplot2")
