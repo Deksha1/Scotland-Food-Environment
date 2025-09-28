@@ -32,7 +32,7 @@ This file contains organised data from table 2 to create figures with ease.
 
 ***Code Files***
 
-1. Food Environment Paper.R
+1. Food_Environment_Scotland.R
 
 This R script includes:
 
@@ -41,3 +41,7 @@ This R script includes:
 -Outputs summary tables and figures of food outlet classification, overall and by local authority.
 
 -Conducts an analysis of the association between food outlet density and SIMD, overall and by local authority. 
+
+2. Food_establishment_matching.ipynb
+
+   
